@@ -1,3 +1,11 @@
+<?php
+
+error_reporting(0);
+
+$b = 0;
+
+ ?>
+
 <html lang="ru">
 <title></title>
 <meta charset="utf-8">
