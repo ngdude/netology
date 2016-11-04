@@ -9,9 +9,9 @@ $df[] = $row;
 }
 fclose($handle);
 
-echo "</br>";
-var_dump ($df);
-echo "</br>";
+//echo "</br>";
+//var_dump ($df);
+//echo "</br>";
 
 echo '<center><table cellpadding="15" cellspacing="0" border="1">';
 for ($i=0 ; $i < count($df) ; $i++){
