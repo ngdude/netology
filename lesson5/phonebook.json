@@ -1,0 +1,52 @@
+[
+  {
+      "name": "Ivan",
+      "surname": "Ivaov",
+      "phonenumber" : 89161111111
+  },
+  {
+      "name": "Ivan",
+      "surname": "Karlov",
+      "phonenumber" : 89161112211
+  },
+  {
+      "name": "Elena",
+      "surname": "Krulova",
+      "phonenumber" : 89163331155
+  },
+  {
+      "name": "David",
+      "surname": "Davidov",
+      "phonenumber" : 89169991144
+  },
+  {
+      "name": "Roma",
+      "surname": "Kovalev",
+      "phonenumber" : 89161117722
+  },
+  {
+      "name": "James",
+      "surname": "Bond",
+      "phonenumber" : "007"
+  },
+  {
+      "name": "Anton",
+      "surname": "Antonov",
+      "phonenumber" : 89169991199
+  },
+  {
+      "name": "Maria",
+      "surname": "Kondrashova",
+      "phonenumber" : 89167776622
+  },
+  {
+      "name": "Yuri",
+      "surname": "Gagarin",
+      "phonenumber" : 89169999999
+  },
+  {
+      "name": "Denis",
+      "surname": "Sarkisan",
+      "phonenumber" : 89161231212
+  }
+  ]
