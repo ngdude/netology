@@ -52,13 +52,18 @@ for ($i=0 ; $i < count($json_a["tans"]) ; $i++){
 
     echo "Вопрос номер $n: "; $n++;
 
-    if ($_POST['pans'][$i] == $json_a["tans"][$i] )
-        {
+    if ($_POST['pans'][$i] == $json_a["tans"][$i])
+    {
             echo " Верно"; $right++;
+            echo "</br>";
+    }
+    elseif ($_POST['pans'][$i] !== $json_a["tans"][$i])
+    {
 
-        }
-        else
-            echo " Не верно"; $wrong++;
+        echo " Не верно"; $wrong++;
+        echo "</br>";
+    }
+
 
 echo "</br>";
 

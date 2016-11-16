@@ -29,6 +29,7 @@ echo
 '<form action="" method="post">'.'В центральном верхнем поле введите имя теста'."</br>".'<input type="text" name="testname" />'."</br>"
 ;
 echo 'В левых столбцах введите вопрос, а в правых - ответ'."</br>";
+$i = 0;
 for ($i ; $i < $input ; $i++ )
 {
 
@@ -57,7 +58,7 @@ unset($_POST['SubmitButton2']);
 //$data = json_decode($file);
 //file_put_contents('$_POST[testname]',json_encode($_POST));
 
-$fullpath = 'tests/'.$_POST[testname].'.json';
+$fullpath = 'tests/'.$_POST["testname"].'.json';
 $fp = fopen("$fullpath", 'w');
 fwrite($fp, json_encode($_POST, JSON_UNESCAPED_UNICODE));
 fclose($fp);
