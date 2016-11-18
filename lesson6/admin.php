@@ -26,7 +26,7 @@ $n = 1;
 
 //var_dump($_POST);
 echo
-'<form action="" method="post">'.'В центральном верхнем поле введите имя теста'."</br>".'<input type="text" name="testname" />'."</br>"
+'<form action="" method="post">'.'В центральном верхнем поле введите имя теста'."</br>".'<input type="text" name="testname" required/>'."</br>"
 ;
 echo 'В левых столбцах введите вопрос, а в правых - ответ'."</br>";
 $i = 0;
@@ -37,8 +37,8 @@ echo 'Вопрос номер'."$n" ;
 echo "<br />";
 echo
 '
-<input type="text" name="tquest[]"/>
-<input type="text" name="tans[]"/>
+<input type="text" name="tquest[]" required/>
+<input type="text" name="tans[]" required/>
 
 ';
 $n++;
@@ -46,7 +46,7 @@ echo "<br />";
 }
 echo "<br />";
 echo '
-<input type="submit" name="SubmitButton2" value="Создать Тест"/>
+<input type="submit" name="SubmitButton2" value="Создать Тест" />
 </form>
 ';
 }

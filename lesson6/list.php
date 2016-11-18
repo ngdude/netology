@@ -22,18 +22,8 @@ for ( $i ; $i < count($dh) ; $i++) {
 
     echo "<tr><td>".'<a href="'.'form.php?test='.$dh["$i"].'">'.$filename_no_ext.'</a>'."</td><td>".$modified."</td></tr>";
 
-
 }
 echo "</center></table>";
-echo "</br>";
-
-
-echo '<center><table cellpadding="15" cellspacing="0" border="1">';
-
-
-
-
-
 ?>
 <center>
 </body>
