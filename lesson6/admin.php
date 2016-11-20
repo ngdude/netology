@@ -58,7 +58,7 @@ unset($_POST['SubmitButton2']);
 //$data = json_decode($file);
 //file_put_contents('$_POST[testname]',json_encode($_POST));
 
-$fullpath = 'tests/'.$_POST["testname"].'.json';
+$fullpath = __DIR__.'//tests/'.$_POST["testname"].'.json';
 $fp = fopen("$fullpath", 'w');
 fwrite($fp, json_encode($_POST, JSON_UNESCAPED_UNICODE));
 fclose($fp);

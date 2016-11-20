@@ -1,30 +1,30 @@
 <?php
 mb_internal_encoding("UTF-8");
-
+error_reporting(E_ALL);
 function lookforfile($search_for)
 {
 
-$dir = __DIR__ . '\tests' ;
+$dir = __DIR__.'/tests' ;
+var_dump ($dir);
 if (is_dir($dir)) {
     if ($dh = opendir($dir)) {
         while (($file = readdir($dh)) !== false) {
             if ($file != "." and $file != "..")
             if (($search_for == $file) == true)
-            {//echo "Файл найден";
-            return $dir . '\\' . $file ;
-            }
+            goto end;
 
         }
         echo "Файл не найден";
         die;
         closedir($dh);
+        end:
     }
 }
 }
 
 function form_render($from_get)
 {
-$string = file_get_contents('tests/'."$from_get");
+$string = file_get_contents(__DIR__.'/tests//'."$from_get");
 $json_a = json_decode($string, true);
 
 if (empty($_POST['SubmitButton2']))
