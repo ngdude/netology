@@ -1,6 +1,23 @@
 <?php
 error_reporting(E_ALL);
 mb_internal_encoding("UTF-8");
+
+function json_auth($user,$userpass)
+{
+$dir = __DIR__.'/users';
+$files1 = scandir($dir);
+if (in_array($user.'.json',$files1) == (bool)false) header('Location: index.php');;
+$id = array_search($user.'.json',$files1);
+$json = file_get_contents(__DIR__.'/users/'.$files1[$id]);
+$UserData = json_decode($json, true);
+if($user == $UserData['username'] && $userpass == $UserData['password']){
+$_SESSION['login'] =  $UserData['username'];
+$_SESSION['password'] =  $UserData['password'];
+header('Location: list.php');
+}
+header('Location: list.php');
+}
+
 function lookforfile($search_for)
 {
 $dir = '.\tests' ;

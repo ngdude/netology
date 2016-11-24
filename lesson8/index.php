@@ -1,28 +1,14 @@
 <?php
 session_start();
 include 'functions.php';
-define('USER', 'admin');
-define('PASSWORD', 'admin');
-if (isset($_SESSION['login'])) header('Location: list.php');
-if (isset($_SESSION['guest'])) header('Location: list.php');
+if (isset($_SESSION['login']) or isset($_SESSION['guest']))
+header('Location: list.php');
 
-
-if (!empty($_POST['Auth'])) {
-    if ($_POST['Auth']['login'] == USER
-        && $_POST['Auth']['password'] == PASSWORD) {
-        $_SESSION['login'] = $_POST['Auth']['login'];
-        header('Location: list.php');
-    }
- elseif(!empty($_POST['Auth']['guest'])){
+if(!empty($_POST['Auth']['login'])) json_auth($_POST['Auth']['login'],$_POST['Auth']['password']);
+if(!empty($_POST['Auth']['guest'])){
     $_SESSION['guest']['user'] = $_POST['Auth']['guest'];
-    header('Location: list.php');
-}
- else
-    header('Location: index.php');
-}
-//var_dump($_POST['Auth']['guest']);
-//var_dump($_SESSION['guest']['user']);
-//echo $_SESSION[guest][user];
+    header('Location: list.php');}
+
 
 
 if (!isset($_GET["id"])){
