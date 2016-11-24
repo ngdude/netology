@@ -6,9 +6,6 @@ error_reporting(E_ALL);
 $homeUrl = 'list.php';
 $authUrl = 'index.php';
 
-//var_dump($_SESSION['guest']['111']);
-//var_dump($_SESSION['login']);
-
 if (!empty($_SESSION['login']))
     goto next_admin;
 elseif (!empty($_SESSION['guest'])){
