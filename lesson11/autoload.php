@@ -32,12 +32,10 @@ $Prod3->setStore('Нижний');
 */
 //var_dump($Prod);
 
-$Prod[0]->getAllProducts();
 
 
 
 //var_dump($Prod);
-echo "</br>";
 /*
 var_dump($Prod2);
 echo "</br>";
