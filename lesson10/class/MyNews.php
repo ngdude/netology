@@ -4,24 +4,55 @@ class MyNews {
   public $title;
   public $category;
   public $text;
-  public $time;
-  public $date;
+  private $time;
+  private $date;
 
-    public function setNews() {}
-    public function getNews() {}
-    public function setDate() { }
+  public function __construct($name, $title, $category, $text, $time ,$date ) {
+    $this->name = $name;
+    $this->title = $title;
+    $this->category = $category;
+    $this->text = $text;
+    $this->time = $time;
+    $this->date = $date;
+  }
+
+  public function getNewstitle() {
+      return $this->title;
+  }
+  public function getNewsDate() {
+      return $this->date;
+  }
+    public function getNews() {
+        {
+       echo "<dl>";
+       echo "<dd><b>$this->date</b></dd>";
+       echo "<dd>$this->time <b>$this->name  Тема:</b> $this->category</dd> ";
+       echo "<dd><b><i>$this->title</b></i></dd>";
+       echo "<dd>$this->text</dd>";
+       echo "</dl>";
+        }
+    }
+    public function setCategory($category) {
+        $this->category =$category;
+        echo "Category was setted to $category</br>";
+    }
     public function countNews() {}
     public function setLast5news() {}
     public function showCategory() {}
 
-        class HotNews extends MyNews{
-            public $hotnews
-
 }
 
-}
 
-$news1 = new MyNews('Новость 1', 'Бой-реванш между Ковалевым и Уордом.' , 'спорт' , 'Промоутер российского боксера Сергея Ковалева Кэти Дува объявила
+    class HotNews extends MyNews{
+            private $hot = 0;
+            public function setAsHot(){
+                $this->hot = 1;
+                echo "News $this->name was setted up as hot!";
+            }
+
+    }
+
+$news1 = new HotNews('Новость 1', 'Бой-реванш между Ковалевым и Уордом.' , 'спорт' , 'Промоутер российского боксера Сергея Ковалева Кэти Дува объявила
 о немедленном начале переговоров о проведении боя-реванша против американца Андре Уорда
 Контракт на первый поединок содержал условие о проведении реванша, и Дува намерена немедленно активировать этот пункт.
 По соглашению повторный бой не может быть проведен ни в США, ни в России. Поединок должен состояться на нейтральной территории.' , '18:30' , '02.08.16');
@@ -43,7 +74,4 @@ $news5 = new MyNews('Новость 5', 'BMW 5-Series получила опци�
 Для модификации 540i также увеличили мотора до 360 лошадиных сил.
 Кроме этого возросла мощность дизельной версии 530d. Теперь отдача агрегата этой модификации составляет
 290 лошадиных сил. ' , '18:50' , '02.08.16');
-$news6 = new HotNews('Новость 6', 'блаблаблабалабалбала' , '18:50' , '02.08.16','СРОЧНО В ЭФИР');
-
-
 ?>
