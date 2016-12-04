@@ -4,12 +4,33 @@ class MyNews {
   public $title;
   public $category;
   public $text;
-  public $time;
-  public $date;
-    }
+  private $time;
+  private $date;
+
+  public function __construct($name, $title, $category, $text, $time ,$date ) {
+    $this->name = $name;
+    $this->title = $title;
+    $this->category = $category;
+    $this->text = $text;
+    $this->time = $time;
+    $this->date = $date;
+  }
+
     public function setNews() {}
-    public function getNews() {}
-    public function setDate() { }
+    public function getNews() {
+        {
+       echo "<dl>";
+       echo "<dd><b>$this->date</b></dd>";
+       echo "<dd>$this->time <b>$this->name  Тема:</b> $this->category</dd> ";
+       echo "<dd><b><i>$this->title</b></i></dd>";
+       echo "<dd>$this->text</dd>";
+       echo "</dl>";
+        }
+    }
+    public function setCategory($category) {
+        $this->category =$category;
+        echo "Category was setted to $category</br>";
+    }
     public function countNews() {}
     public function setLast5news() {}
     public function showCategory() {}
