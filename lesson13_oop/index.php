@@ -73,8 +73,8 @@ $taskslist = $objTasks->fromDBtoArray($_GET["sort_by"]);
 <tr><td>
     <?php echo $row["description"];?>
 </td><td>
-    <? if ($row["is_done"] == 0 ) {echo "<font color=".'red'.">Не выполнено</font>";}
-else {echo "<font color=".'green'.">Выполнено</font>";} ?>
+    <?php if ($row["is_done"] == 0 ) echo "<font color=".'red'.">Не выполнено</font>";
+else echo "<font color=".'green'.">Выполнено</font>"; ?>
 </td><td>
     <?php echo $row["date_added"] ?>
 </td><td>
