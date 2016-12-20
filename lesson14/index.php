@@ -4,7 +4,6 @@ if (empty($_SESSION['user_id'])){
     header('HTTP/1.1 302 Found');
     header('Location: auth.php');
 }
-
 require_once __DIR__.'//issets/'.('WorkWithDatabase.class.php');
 require_once __DIR__.'//issets/'.('databaseconfig.php');
 include __DIR__.'//issets/'.('phpconfig.php');
@@ -16,8 +15,6 @@ if(!isset($_POST['update'])) {$_POST['update']=NULL;}
 if(!isset($_POST['assignTaskToUser'])) {$_POST['assignTaskToUser']=NULL;}
 if(!isset($_GET['action'])) { $_GET['action']=NULL;}
 if(!isset($_GET['sort_by'])) { $_GET['sort_by']=NULL;}
-
-
 if(!empty($_POST['createDescription'])) { $objTasks->addTask($_POST['createDescription'],$_SESSION['user_id']);}
 if(isset($_POST['edit']) && !empty($_POST['id'])){ $objTasks->updateDescription($_POST['id'],$_POST['edit']);}
 if(($_GET['action'] == 'delete') && !empty($_GET['id'])){ $objTasks->delTask($_GET['id']);}
@@ -25,9 +22,9 @@ if(!empty($_GET['changeTaskStatus'])){ $objTasks->changeTaskStatus($_GET['change
 if((!empty($_POST['assignTaskToUser'])) && !empty($_POST['id']) && !empty($_POST['assign_to_id'])){ $objTasks->assignTaskTo($_POST['id'],$_POST['assign_to_id']);}
 
 $taskslist = $objTasks->getUsersTasks($_GET['sort_by'],$_SESSION['user_id']);
+$taskslistforusers = $objTasks->getTasksForUser($_GET['sort_by'],$_SESSION['user_id']);
 $userslist = $objTasks->getUsers();
-
-//var_dump($objTasks->getUsers());
+$serverUrl = $_SERVER['PHP_SELF'];
 ?>
 
 <html>
@@ -51,7 +48,7 @@ $userslist = $objTasks->getUsers();
 <body>
     <center><h2> Привет  <?php echo $_SESSION['user_name'] ;?>! Ваш список Дел!:</h2>
             <div style="display: inline-block">
-            <form action = "<?php echo $_SERVER['PHP_SELF'];?>" method = "POST">
+            <form action = "<?php echo $serverUrl;?>" method = "POST">
                 <?php if(($_GET['action'] == 'edit') && !empty($_GET['id'])){
                  echo '<input type="text" name="edit" placeholder="Описание задачи" value="'.$objTasks->getDescription($_GET['id']).'" />
                 <input type="hidden" name="id" placeholder="id" value="'.$_GET['id'].'" />
@@ -62,7 +59,7 @@ $userslist = $objTasks->getUsers();
             </form>
             </div>
             <div style="display: inline-block; margin-auto: 0px;">
-            <form action = "<?php echo $_SERVER['PHP_SELF'];?>" method = "GET">
+            <form action = "<?php echo $serverUrl;?>" method = "GET">
                 <label for="sort">Сортировать по:</label>
                 <select name="sort_by">
                     <option value="date_added">Дате добавления</option>
@@ -85,7 +82,7 @@ $userslist = $objTasks->getUsers();
     <th></th>
     <th>Переложить Задачу</th>
 </tr>
-<?php foreach ($objTasks->getUsersTasks($_GET['sort_by'],$_SESSION['user_id']) as $row){?>
+<?php foreach ($taskslist as $row){?>
 <tr><td>
     <?php echo $row['description'];?>
 </td><td>
@@ -94,13 +91,13 @@ else echo "<font color=".'green'.">Выполнено</font>"; ?>
 </td><td>
     <?php echo $row['date_added'] ?>
 </td><td>
-    <?php echo "<a href=".$_SERVER['PHP_SELF'].'?id='.$row["id"]."&action=edit>Изменить</a>"; ?></td>
-    <td><?php  if ($row['is_done'] == 0 ) {echo "<a href=".$_SERVER['PHP_SELF'].'?changeTaskStatus='.$row['id'].'&Status=1'.">Выполнить</a>"; }
-        else {echo "<a href=".$_SERVER['PHP_SELF'].'?changeTaskStatus='.$row['id'].'&Status=0'.">Развыполнить :)</a>"; }?></td>
-    <td><?php echo "<a href=".$_SERVER['PHP_SELF'].'?id='.$row['id']."&action=delete>Удалить</a>"; ?></td>
+    <?php echo "<a href=".$serverUrl.'?id='.$row["id"]."&action=edit>Изменить</a>"; ?></td>
+    <td><?php  if ($row['is_done'] == 0 ) {echo "<a href=".$serverUrl.'?changeTaskStatus='.$row['id'].'&Status=1'.">Выполнить</a>"; }
+        else {echo "<a href=".$serverUrl.'?changeTaskStatus='.$row['id'].'&Status=0'.">Развыполнить :)</a>"; }?></td>
+    <td><?php echo "<a href=".$serverUrl.'?id='.$row['id']."&action=delete>Удалить</a>"; ?></td>
     <td><?php echo $objTasks->getUserById($row['user_id']) ?></td>
     <td><?php if ($row['assigned_user_id'] == NULL) {echo "ВЫ";} else { echo $objTasks->getUserById($row['assigned_user_id']); }  ?></td>
-    <td><form action = "<?php echo $_SERVER['PHP_SELF'];?>" method = "POST"><select name="assign_to_id">
+    <td><form action = "<?php echo $serverUrl;?>" method = "POST"><select name="assign_to_id">
         <?php for ($i=0; $i < count($userslist);$i++){ ?>
   <option name="<?php echo $userslist[$i]['login'] ?>"
       value="<?php echo $userslist[$i]['id'] ?>"><?php echo $userslist[$i]['login'];?>
@@ -125,7 +122,7 @@ else echo "<font color=".'green'.">Выполнено</font>"; ?>
 <th>Автор</th>
 <th>Ответственный</th>
 </tr>
-<?php foreach ($objTasks->getTasksForUser($_GET['sort_by'],$_SESSION['user_id']) as $row){?>
+<?php foreach ($taskslistforusers as $row){?>
 <tr><td>
     <?php echo $row['description'];?>
 </td><td>
@@ -134,10 +131,9 @@ else echo "<font color=".'green'.">Выполнено</font>"; ?>
 </td><td>
     <?php echo $row['date_added'] ?>
 </td><td>
-    <?php echo "<a href=".$_SERVER['PHP_SELF'].'?id='.$row["id"]."&action=edit>Изменить</a>"; ?></td>
-    <td><?php  if ($row['is_done'] == 0 ) {echo "<a href=".$_SERVER['PHP_SELF'].'?changeTaskStatus='.$row['id'].'&Status=1'.">Выполнить</a>"; }
-        else {echo "<a href=".$_SERVER['PHP_SELF'].'?changeTaskStatus='.$row['id'].'&Status=0'.">Развыполнить :)</a>"; }?></td>
-    <td><?php echo "<a href=".$_SERVER['PHP_SELF'].'?id='.$row['id']."&action=delete>Удалить</a>"; ?></td>
+    <td><?php  if ($row['is_done'] == 0 ) {echo "<a href=".$serverUrl.'?changeTaskStatus='.$row['id'].'&Status=1'.">Выполнить</a>"; }
+        else {echo "<a href=".$serverUrl.'?changeTaskStatus='.$row['id'].'&Status=0'.">Развыполнить :)</a>"; }?></td>
+    <td></td>
     <td><?php echo $objTasks->getUserById($row['user_id']) ?></td>
     <td><?php if ($row['assigned_user_id'] == NULL) {echo "ВЫ";} else { echo $objTasks->getUserById($row['assigned_user_id']); }  ?></td>
 <?php }?>
