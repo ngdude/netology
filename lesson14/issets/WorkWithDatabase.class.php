@@ -26,6 +26,8 @@ class WorkWithDatabase extends PDO
         $pre1->bindValue(':login', $user, PDO::PARAM_STR);
         $pre1->bindValue(':password', $password, PDO::PARAM_STR);
         $result1 = $pre1->execute();
+        $this->userLogin($user,$password);
+        return;
     }
     }
 
@@ -35,38 +37,37 @@ class WorkWithDatabase extends PDO
         $pre->bindValue(':login', $user, PDO::PARAM_STR);
         $pre->execute();
         $result = $pre->fetchall(PDO::FETCH_ASSOC);
-        var_dump(count($result));
-        echo "</br>";
-        var_dump($result);
-        echo "</br>";
-        var_dump($result[0]['login']);
-        echo "</br>";
-        var_dump($result[0]['password']);
+        if (!isset($result[0]['login'])) {$result[0]['login'] = NULL;}
+        if (!isset($result[0]['password'])) {$result[0]['password'] = NULL;}
         if (($result[0]['login'] === $user) && ($result[0]['password'] === $password)){
             $_SESSION["user_id"] = $result[0]['id'];
             $_SESSION["user_name"] = $result[0]['login'];
-            return;
+            header('HTTP/1.1 302 Found');
+            header('Location: index.php');
         }
         else {
-            echo "проверьте имя пользователя ипароль!";
+            echo "Неправильные учётные данные";
+            return;
+
         }
         return $result;
     }
 
 
-    function gettask($user_id)
+    function getUsersTasks($type,$user_id)
     {
-        $pre = $this->prepare("SELECT * FROM task where user_id = :user_id");
+        $ordered = $type === NULL ? '' : " ".'ORDER BY'." $type" ;
+        $pre = $this->prepare("SELECT * FROM task where user_id = :user_id".$ordered);
         $pre->bindValue(':user_id', $user_id, PDO::PARAM_STR);
         $pre->execute();
         $result = $pre->fetchall(PDO::FETCH_ASSOC);
         return $result;
     }
 
-    function FROMDBtoArray($type,$user_id)
+    function getTasksForUser($type,$user_id)
     {
         $ordered = $type === NULL ? '' : " ".'ORDER BY'." $type" ;
-        $pre = $this->prepare("SELECT * FROM task where user_id = :user_id".$ordered);
+        $pre = $this->prepare("SELECT * FROM task where assigned_user_id = :user_id".$ordered);
         $pre->bindValue(':user_id', $user_id, PDO::PARAM_STR);
         $pre->execute();
         $result = $pre->fetchall(PDO::FETCH_ASSOC);
@@ -79,6 +80,23 @@ class WorkWithDatabase extends PDO
         $pre->bindValue(':taskDescription', $task, PDO::PARAM_STR);
         $pre->bindValue(':user_id', $user_id, PDO::PARAM_STR);
         $result = $pre->execute();
+    }
+
+    function getUsers()
+    {
+        $pre = $this->prepare("SELECT id,login FROM user");
+        $pre->execute();
+        $result = $pre->fetchall(PDO::FETCH_ASSOC);
+        return $result;
+    }
+
+    function getUserById($user_id)
+    {
+        $pre = $this->prepare("SELECT login FROM user where id = :user_id");
+        $pre->bindValue(':user_id', $user_id, PDO::PARAM_STR);
+        $pre->execute();
+        $result = $pre->fetchall(PDO::FETCH_ASSOC);
+        return $result[0]['login'];
     }
 
     function delTask($id)
@@ -94,11 +112,21 @@ class WorkWithDatabase extends PDO
         $pre->bindValue(':taskDescription', $task, PDO::PARAM_STR);
         $result = $pre->execute();
     }
-    function changetasktatus($id,$status)
+
+    function assignTaskTo($taskid,$userid)
+    {
+        $pre = $this->prepare("UPDATE task SET assigned_user_id = :userid WHERE id = :taskid");
+        $pre->bindValue(':userid', $userid, PDO::PARAM_STR);
+        $pre->bindValue(':taskid', $taskid, PDO::PARAM_STR);
+        $result = $pre->execute();
+    }
+
+    function changeTaskStatus($id,$status)
     {
         $pre = $this->prepare("UPDATE task SET is_done = $status WHERE id = $id");
         $result = $pre->execute();
     }
+
 
     function getDescription($id)
     {

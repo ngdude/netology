@@ -1,14 +1,15 @@
 <?php
 session_start();
+if (!empty($_SESSION['user_id'])){
+    header('HTTP/1.1 302 Found');
+    header('Location: index.php');
+}
+
 require_once __DIR__.'//issets/'.('WorkWithDatabase.class.php');
 require_once __DIR__.'//issets/'.('databaseconfig.php');
 include __DIR__.'//issets/'.('phpconfig.php');
 
-if (!empty($_SESSION['user_id'])){
-    header('HTTP/1.1 302 Found');
-    header('Location: http://'.$_SERVER['HTTP_HOST'].'/lesson14/index.php');
-}
-
+//var_dump($_SERVER['HTTP_HOST']);
 $objTasks = new WorkWithDatabase($configDbGlobalTasks);
 // проверка параметров Post и GET
 if(!isset($_POST['user'])) {$_POST['user']=NULL;}
