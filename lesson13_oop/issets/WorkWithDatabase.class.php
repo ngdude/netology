@@ -1,78 +1,62 @@
 <?php
-class WorkWithDatabase extends PDO{
 
-    function __construct($config){
+class WorkWithDatabase extends PDO
+{
 
+    public function __construct($config)
+    {
         try {
-            parent::__construct($config['db_type'].
-            ':host='.$config['db_host'].';
-            dbname='.$config['db_name'],$config['db_username'],
-            $config['db_password']);
+            parent::__construct($config['db_type'].':host='.$config['db_host'].';
+            dbname='.$config['db_name'],$config['db_username'],$config['db_password']);
             $this->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
-        } catch(PDOException $e){
+        } catch(PDOException $e) {
             die('ERROR: '. $e->getMessage());
         }
-
     }
-    function    getTasks(){
-        $pre = $this->prepare("select * from tasks");
+    public function FROMDBtoArray($type)
+    {
+        $ordered = $type === NULL ? '' : 'ORDER BY'." $type" ;
+        $pre = $this->prepare("SELECT * FROM tasks ".$ordered);
         $pre->execute();
         $result = $pre->fetchall(PDO::FETCH_ASSOC);
         return $result;
     }
-
-    function fromDBtoArray($type)
-        {
-        if ($type === NULL) {
-            $pre = $this->prepare("select * from tasks");
-            $pre->execute();
-            $result = $pre->fetchall(PDO::FETCH_ASSOC);
-            return $result;
-        }
-        else {
-            $pre = $this->prepare("select * from tasks order by $type");
-            $pre->execute();
-            $result = $pre->fetchall(PDO::FETCH_ASSOC);
-            return $result;
-        }
-    }
-
-    function addTask($task){
-        $pre = $this->prepare("insert into tasks (description) value (:taskDescription)");
+    public function addTask($task)
+    {
+        $pre = $this->prepare("INSERT INTO tasks (description) value (:taskDescription)");
         $pre->bindValue(':taskDescription', $task, PDO::PARAM_STR);
         $result = $pre->execute();
     }
-
-    function delTask($id){
-        $pre = $this->prepare("delete from tasks where id = :id");
+    public function delTask($id)
+    {
+        $pre = $this->prepare("DELETE FROM tasks where id = :id");
         $pre->bindValue(':id', $id, PDO::PARAM_STR);
         $result = $pre->execute();
     }
-
-    function editTask($id){
-        $pre = $this->prepare("delete from tasks where id = $id");
+    public function editTask($id)
+    {
+        $pre = $this->prepare("DELETE FROM tasks where id = $id");
         $pre->bindValue(':taskDescription', $task, PDO::PARAM_STR);
         $result = $pre->execute();
     }
-
-    function changeTaskStatus($id,$status){
+    public function changeTaskStatus($id,$status)
+    {
         $pre = $this->prepare("UPDATE tasks SET is_done = $status WHERE id = $id");
         $result = $pre->execute();
     }
-
-    function getDescription($id){
-        $pre = $this->prepare("select description from tasks WHERE id = :id");
+    public function getDescription($id)
+    {
+        $pre = $this->prepare("SELECT description FROM tasks WHERE id = :id");
         $pre->bindValue(':id', $id, PDO::PARAM_INT);
         $result = $pre->execute();
-        $result = $pre->fetchall(PDO::FETCH_ASSOC);
-        return $result[0]["description"];
+        $result = $pre->fetchColumn(0);
+        return $result;
     }
-
-    function updateDescription($id,$description){
+    public function updateDescription($id,$description)
+    {
         $pre = $this->prepare("update tasks set description = :description where id = :id");
         $pre->bindValue(':description', $description, PDO::PARAM_INT);
         $pre->bindValue(':id', $id, PDO::PARAM_INT);
         $result = $pre->execute();
     }
 }
-?>
