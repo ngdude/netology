@@ -6,3 +6,4 @@ $configDbGlobalTasks = array(
     'db_username' => 'dvertiev',
     'db_password' => 'neto0708'
 );
+$objTasks = new WorkWithDatabase($configDbGlobalTasks);

@@ -23,10 +23,19 @@ var_dump($_POST['password']);
 var_dump($_POST['login']);
 var_dump($_POST['register']);
 */
-if(!empty($_POST['user']) && !empty($_POST['password']) && !empty($_POST['register']))
-{ $objTasks->addUser($_POST['user'],$_POST['password']);}
-if(!empty($_POST['user']) && !empty($_POST['password']) && !empty($_POST['login']))
-{ $objTasks->userLogin($_POST['user'],$_POST['password']);}
+
+if(!empty($_POST['user']) && !empty($_POST['password']) && !empty($_POST['register'])) {
+    if (($objTasks->getIsUserExist($_POST['user'])) > 0) {
+        var_dump($objTasks->getIsUserExist($_POST['user']));
+        $errorMsg = 'Пользователь уже существует';
+    } else {
+        $objTasks->addUser($_POST['user'],$_POST['password']);
+    }
+}
+
+if(!empty($_POST['user']) && !empty($_POST['password']) && !empty($_POST['login'])) {
+    $objTasks->userLogin($_POST['user'],$_POST['password']);
+}
 
 
 ?>
@@ -51,6 +60,7 @@ if(!empty($_POST['user']) && !empty($_POST['password']) && !empty($_POST['login'
     </head>
 <body>
     <center><h2> Авторизация </h2>
+                <?php if(isset($errorMsg)) echo "$errorMsg</br>" ;?>
             <div style="display: inline-block">
             <form action = "<?php echo $_SERVER['PHP_SELF'];?>" method = "POST">
                 <input type="text" name="user" placeholder="Логин" value="" />

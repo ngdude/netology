@@ -13,23 +13,25 @@ class WorkWithDatabase extends PDO
         }
     }
 
-    function addUser($user,$password)
+    function getIsUserExist($user)
     {
-        $pre = $this->prepare("SELECT count(*) FROM user where login = :login");
+        $pre = $this->prepare("SELECT count(id) FROM user WHERE login = :login");
         $pre->bindValue(':login', $user, PDO::PARAM_STR);
         $pre->execute();
         $result = $pre->fetchall(PDO::FETCH_ASSOC);
-        if ( $result[0]['count(*)'] > 0 ) {
-             echo "Пользователь $user уже существует";}
-        else {
-        $pre1 = $this->prepare("INSERT INTO user (login,password) values (:login,:password)");
-        $pre1->bindValue(':login', $user, PDO::PARAM_STR);
-        $pre1->bindValue(':password', $password, PDO::PARAM_STR);
-        $result1 = $pre1->execute();
+        return $result[0]['count(id)'];
+    }
+
+    function addUser($user,$password)
+    {
+        $pre = $this->prepare("INSERT INTO user (login,password) values (:login,:password)");
+        $pre->bindValue(':login', $user, PDO::PARAM_STR);
+        $pre->bindValue(':password', $password, PDO::PARAM_STR);
+        $result = $pre->execute();
         $this->userLogin($user,$password);
         return;
     }
-    }
+
 
     function userLogin($user,$password)
     {
@@ -37,8 +39,8 @@ class WorkWithDatabase extends PDO
         $pre->bindValue(':login', $user, PDO::PARAM_STR);
         $pre->execute();
         $result = $pre->fetchall(PDO::FETCH_ASSOC);
-        if (!isset($result[0]['login'])) {$result[0]['login'] = NULL;}
-        if (!isset($result[0]['password'])) {$result[0]['password'] = NULL;}
+        if (!isset($result[0]['login'])) {$result[0]['login'] = null;}
+        if (!isset($result[0]['password'])) {$result[0]['password'] = null;}
         if (($result[0]['login'] === $user) && ($result[0]['password'] === $password)){
             $_SESSION["user_id"] = $result[0]['id'];
             $_SESSION["user_name"] = $result[0]['login'];
@@ -46,18 +48,19 @@ class WorkWithDatabase extends PDO
             header('Location: index.php');
         }
         else {
-            echo "Неправильные учётные данные";
             return;
-
         }
-        return $result;
     }
 
 
     function getUsersTasks($type,$user_id)
     {
-        $ordered = $type === NULL ? '' : " ".'ORDER BY'." $type" ;
-        $pre = $this->prepare("SELECT * FROM task where user_id = :user_id".$ordered);
+        $ordered = $type === null ? '' : " ".'ORDER BY'." $type" ;
+        //$pre = $this->prepare("SELECT * FROM task where user_id = :user_id".$ordered);
+        $pre = $this->prepare("SELECT t.id, t.description, t.is_done, t.date_added,
+        u.login as user_name, u2.login as assigned_user_name FROM task t
+        INNER JOIN user u on t.user_id = u.id and u.id = $user_id
+        LEFT JOIN user u2 on t.assigned_user_id = u2.id ".$ordered);
         $pre->bindValue(':user_id', $user_id, PDO::PARAM_STR);
         $pre->execute();
         $result = $pre->fetchall(PDO::FETCH_ASSOC);
@@ -66,8 +69,12 @@ class WorkWithDatabase extends PDO
 
     function getTasksForUser($type,$user_id)
     {
-        $ordered = $type === NULL ? '' : " ".'ORDER BY'." $type" ;
-        $pre = $this->prepare("SELECT * FROM task where assigned_user_id = :user_id".$ordered);
+        $ordered = $type === null ? '' : " ".'ORDER BY'." $type" ;
+        //$pre = $this->prepare("SELECT * FROM task where assigned_user_id = :user_id".$ordered);
+        $pre = $this->prepare("SELECT t.id, t.description, t.is_done, t.date_added,
+        u.login as user_name, u2.login as assigned_user_name FROM task t
+        INNER JOIN user u on t.user_id = u.id
+        INNER JOIN user u2 on t.assigned_user_id = u2.id and u2.id = $user_id ".$ordered);
         $pre->bindValue(':user_id', $user_id, PDO::PARAM_STR);
         $pre->execute();
         $result = $pre->fetchall(PDO::FETCH_ASSOC);
