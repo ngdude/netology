@@ -26,7 +26,7 @@ var_dump($_POST['register']);
 
 if(!empty($_POST['user']) && !empty($_POST['password']) && !empty($_POST['register'])) {
     if (($objTasks->getIsUserExist($_POST['user'])) > 0) {
-        var_dump($objTasks->getIsUserExist($_POST['user']));
+        //var_dump($objTasks->getIsUserExist($_POST['user']));
         $errorMsg = 'Пользователь уже существует';
     } else {
         $objTasks->addUser($_POST['user'],$_POST['password']);
