@@ -1,4 +1,7 @@
 <?php
+// Turn off all error reporting
+error_reporting(0);
+//load modules
 require __DIR__.'/vendor/autoload.php';
 include __DIR__.'/issets/main.php';
 ?>

@@ -1,4 +1,4 @@
-<?
+<?php
 $serverUrl = $_SERVER['PHP_SELF'];
 
 if (isset($_GET['address'])) { $searchAddress = $_GET['address'];}
@@ -41,5 +41,3 @@ elseif ($response->getFoundCount() > 0){
     $linkToMap = 'https://static-maps.yandex.ru/1.x/?ll='.$lookForY.','.$lookForX.
     '&z=12&size=450,450&l=map&pt='.$lookForY.','.$lookForX.',flag';
 }
-
-?>
