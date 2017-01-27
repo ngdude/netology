@@ -30,6 +30,10 @@
                     @endif
                     <div class="center-block">
                         <a href="{{ route('questions.create') }}" class="btn btn-primary">Создать вопрос</a>
+                        <a href="{{ route('questions.index') }}" class="btn btn-primary">Все вопросы</a>
+                        <a href="{{ route('questions.index.status', 'waitting' ) }}" class="btn btn-primary">не отвеченные</a>
+                        <a href="{{ route('questions.index.status', 'shown' ) }}" class="btn btn-primary">опубликованные</a>
+                        <a href="{{ route('questions.index.status', 'hidden' ) }}" class="btn btn-primary">скрытые</a>
                     </div>
                     <div class="center-block">
                     <table class="table">
@@ -51,15 +55,15 @@
                                 <td>{{ $question->question }}</td>
                                 <td>
                                     @if(($question->status) == 0)
-                                    <a href="{{ route('questions.answer', $question->id) }}">ожидает ответа</a>
+                                        <p class="bg-danger"><a href="{{ route('questions.answer', $question->id) }}">ожидает ответа</a></p>
                                     @elseif(($question->status) == 1)
-                                        опубликован
+                                        <p class="bg-success">опубликован</p>
                                     @elseif(($question->status) == 2)
-                                        скрыт
+                                        <p class="bg-info">скрыт</p>
                                     @else
-                                        не известный
+                                        <p class="bg-danger">не известный</p>
                                     @endif
-                                    </td>
+                                </td>
                                 <td>{{ $question->created_at }}</td>
                                 <td>{{ $question->updated_at }}</td>
                                 <td><a href="{{ route('questions.edit', $question->id) }}" class="btn btn-primary">Редактировать</a></td>

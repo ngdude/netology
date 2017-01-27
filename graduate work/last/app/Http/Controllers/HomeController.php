@@ -49,6 +49,7 @@ class HomeController extends Controller
 
     public function indexAdmin()
     {
+        $this->middleware('auth');
         return view('admin.index');
     }
 

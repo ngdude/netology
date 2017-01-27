@@ -48,6 +48,7 @@
                                 <td>{{ $admin->name }}</td>
                                 <td>{{ $admin->created_at }}</td>
                                 <td>{{ $admin->updated_at }}</td>
+                                <td><a href="{{ route('admins.edit', $admin->id) }}" class="btn btn-primary">Сменить пароль</a></td>
                                 <td>
                                     <form method="POST" action="{{ route('admins.destroy', $admin->id) }}">
                                         {{ method_field('DELETE') }}

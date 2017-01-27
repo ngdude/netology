@@ -68,7 +68,7 @@ class TopicsController extends Controller
         */
         $this->validate($request, ['topic_name' => 'required|unique:topics|max:100']);
         Topic::create($request->all());
-        Session::flash('flash_message', 'Task successfully added!');
+        Session::flash('flash_message', 'Тема успешно добавлена!');
         return redirect('/admin/topics');
     }
 
@@ -107,9 +107,10 @@ class TopicsController extends Controller
         $topic = Topic::findOrFail($id);
         $this->validate($request, ['topic_name' => 'required|unique:topics|max:100']);
         $input = $request->all();
+        dump($input);
         $topic->fill($input)->save();
-        Session::flash('flash_message', 'Task successfully added!');
-        return redirect('/admin/topics');
+        Session::flash('flash_message', 'Тема успешно изменена!');
+        //return redirect('/admin/topics');
 
     }
 
@@ -123,7 +124,7 @@ class TopicsController extends Controller
     {
         $topic = Topic::findOrFail($id);
         $topic->delete();
-        Session::flash('flash_message', 'Тема успешна удалена!');
+        Session::flash('flash_message', 'Тема успешно удалена!');
         Log::info('Тема успешна удалена!');
         return redirect('/admin/topics');
     }

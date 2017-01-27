@@ -7,6 +7,7 @@ use App\User;
 use DB;
 use Illuminate\Foundation\Auth\RegistersUsers;
 use Illuminate\Support\Facades\Session;
+use Illuminate\Support\Str;
 
 class AdminsController extends Controller
 {
@@ -20,6 +21,10 @@ class AdminsController extends Controller
     {
         $this->middleware('auth');
     }
+
+    //public function setPasswordAttribute($value){
+    //    $this->attributes['password'] = bcrypt($value);
+    //}
 
     public function index()
     {
@@ -50,8 +55,10 @@ class AdminsController extends Controller
         //User::create($request->all());
         //Session::flash('flash_message', 'Task successfully added!');
         //return redirect('/admin/topics');
-        User::create(['name' => $request['name'], 'password' => bcrypt($request['password']),]);
-        Session::flash('flash_message', 'Пользователь успешно удалён!');
+        User::create(['name' => $request['name'],
+            'password' => bcrypt($request['password_confirmation']),
+            'remember_token' => Str::random(60)]);
+        Session::flash('flash_message', 'Пользователь успешно создан!');
         return redirect('/admin/admins');
         
     }
@@ -75,7 +82,7 @@ class AdminsController extends Controller
      */
     public function edit($id)
     {
-        $admins = User::findOrFail($id);
+        $admin = User::findOrFail($id);
         return view('admin.admins.edit', compact('admin'));
     }
 
@@ -88,7 +95,20 @@ class AdminsController extends Controller
      */
     public function update(Request $request, $id)
     {
-        //
+        $user = User::findOrFail($id);
+        $input1 = $request->all();
+        $input2 = (['name' => $request['name'],
+            'password' => bcrypt($request['password_confirmation']),
+            'remember_token' => Str::random(60),
+            '_method' => $request['_method'],
+            '_token' => $request['_token']
+            ]);
+
+        //dump($input1);
+        //dump($input2);
+        $user->fill($input2)->save();
+        Session::flash('flash_message', 'Тема успешно изменена!');
+        return redirect('/admin/admins');
     }
 
     /**

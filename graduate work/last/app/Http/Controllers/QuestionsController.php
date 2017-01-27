@@ -15,7 +15,6 @@ class QuestionsController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-
     public function __construct()
     {
         $this->middleware('auth');
@@ -24,6 +23,18 @@ class QuestionsController extends Controller
     public function index()
     {
         $questions = Question::paginate(9);
+        return view('admin.questions.index', compact('questions'));
+    }
+    public function indexStatus($status)
+    {
+        if ($status == 'waitting'){
+            $status_id = 0;
+        } elseif ($status == 'shown'){
+            $status_id = 1;
+        } else{
+            $status_id = 2;
+        }
+        $questions = Question::where('status', '=', $status_id)->simplePaginate(10);;
         return view('admin.questions.index', compact('questions'));
     }
 
@@ -43,25 +54,6 @@ class QuestionsController extends Controller
         $question = Question::findOrFail($id);
         return view('admin.questions.answer', compact('question'));
     }
-    
-    public function answerUpdate(Request $request, $id)
-    {
-        $question = Question::findOrFail($id);
-        $this->validate($request, ['answer' => 'required']);
-        $input = $request->all();
-        $question->fill($input)->save();
-        Session::flash('flash_message', 'Task successfully added!');
-        return redirect('/admin/questions');
-    }
-
-    public function answerHide(Request $request, $id)
-    {
-        $question = Question::findOrFail($id);
-        $input = $request->all();
-        $question->fill($input)->save();
-        Session::flash('flash_message', 'Task successfully added!');
-        return redirect('/admin/questions');
-    }
 
     /**
      * Store a newly created resource in storage.
@@ -74,7 +66,7 @@ class QuestionsController extends Controller
         //dump($request);
         $this->validate($request, ['question' => 'required|max:100']);
         Question::create($request->all());
-        Session::flash('flash_message', 'Task successfully added!');
+        Session::flash('flash_message', 'Вопрос успешно добавлен!');
         return redirect('/admin/questions');
     }
 
@@ -132,6 +124,6 @@ class QuestionsController extends Controller
         $question = Question::findOrFail($id);
         $question->delete();
         Session::flash('flash_message', 'Вопрос успешно удалён!');
-        return redirect('/admin/questions');
+        return redirect()->back();
     }
 }

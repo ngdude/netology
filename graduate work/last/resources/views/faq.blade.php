@@ -13,7 +13,7 @@
 </head>
 <body>
 <header>
-    <h1>Создать вопрос</h1>
+    <h1>Вопросы и ответы</h1>
 </header>
 <div class="row">
 <div class="col-md-3">
