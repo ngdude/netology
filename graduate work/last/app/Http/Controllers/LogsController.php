@@ -3,21 +3,26 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
-
+use App\Topic;
+use App\Question;
+use DB;
+use Illuminate\Support\Facades\Session;
+use Illuminate\Support\Facades\Log;
 
 class LogsController extends Controller
 {
     public function __construct()
     {
         $this->middleware('auth');
-    }/**
+    }
+
+    /**
      * Display a listing of the resource.
      *
      * @return \Illuminate\Http\Response
      */
     public function index()
     {
-        //$logs = Log::paginate(10);
         return view('admin.logs.index');
     }
 

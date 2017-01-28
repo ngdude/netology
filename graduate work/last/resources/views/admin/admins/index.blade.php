@@ -50,10 +50,15 @@
                                 <td>{{ $admin->updated_at }}</td>
                                 <td><a href="{{ route('admins.edit', $admin->id) }}" class="btn btn-primary">Сменить пароль</a></td>
                                 <td>
+                                    @if(count($admins) == 1)
+                                    <form>
+                                        <button type="submit" class="btn btn-danger disabled">Удалить</button>
+                                    @else
                                     <form method="POST" action="{{ route('admins.destroy', $admin->id) }}">
                                         {{ method_field('DELETE') }}
                                         {{ csrf_field() }}
                                         <button type="submit" class="btn btn-danger">Удалить</button>
+                                    @endif
                                     </form>
                                 </td>
                             </tr>

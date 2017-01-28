@@ -4,9 +4,10 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Topic;
-use App\Question;
+use Auth;
 use DB;
 use Illuminate\Support\Facades\Session;
+use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\Log;
 
 class TopicsController extends Controller
@@ -25,22 +26,7 @@ class TopicsController extends Controller
     public function index()
     {
         $topics = Topic::paginate(9);
-
-        //$questions = DB::table('questions')
-        //    ->join('topics', 'questions.topic_id', '=', 'topics.id')
-        //    ->select('questions.*', 'topics.topic_name')
-        //    ->get();
-        //dump($topics );
-
-        //dump($questionsActive);
-        //dump($questionsWait);
-        //dump($questionsHide);
-
-        return view('admin.topics.index', compact('topics'));
-        //->(['questionsWait' => $questionsWait,
-        //    'questionsActive' => $questionsActive,
-        //    '$questionsHide' => $questionsHide
-        //    ]);
+            return view('admin.topics.index', compact('topics'));
     }
 
     /**
@@ -48,6 +34,7 @@ class TopicsController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
+
     public function create()
     {
         return view('admin.topics.create');
@@ -59,13 +46,9 @@ class TopicsController extends Controller
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
+
     public function store(Request $request)
     {
-        /*
-        $topic = new Topic;
-        $topic->topic_name = $request->topic_name;
-        $topic->save();
-        */
         $this->validate($request, ['topic_name' => 'required|unique:topics|max:100']);
         Topic::create($request->all());
         Session::flash('flash_message', 'Тема успешно добавлена!');
@@ -78,6 +61,7 @@ class TopicsController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
+
     public function show($id)
     {
         //
@@ -89,6 +73,7 @@ class TopicsController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
+
     public function edit($id)
     {
         $topic = Topic::findOrFail($id);
@@ -102,15 +87,15 @@ class TopicsController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
+
     public function update(Request $request, $id)
     {
         $topic = Topic::findOrFail($id);
         $this->validate($request, ['topic_name' => 'required|unique:topics|max:100']);
         $input = $request->all();
-        dump($input);
         $topic->fill($input)->save();
-        Session::flash('flash_message', 'Тема успешно изменена!');
-        //return redirect('/admin/topics');
+        Session::flash('flash_message', "Тема: $topic->topic_name успешно изменена!");
+        return redirect('/admin/topics');
 
     }
 
@@ -120,12 +105,17 @@ class TopicsController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function destroy($id)
+    
+    public function destroy($id, Request $request)
     {
         $topic = Topic::findOrFail($id);
+        $questionsAtTopic = $topic->getQuestions;
+        foreach ($questionsAtTopic as $question){
+            $question->delete();
+        }
         $topic->delete();
-        Session::flash('flash_message', 'Тема успешно удалена!');
-        Log::info('Тема успешна удалена!');
+        Session::flash('flash_message', "Тема:$topic->topic_name и все вопросы в ней, успешно удалены!");
+        //Log::info("Auth::user()->name удалил Тему:$topic->topic_name и все вопросы в ней");
         return redirect('/admin/topics');
     }
 }

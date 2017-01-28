@@ -39,7 +39,7 @@
                     <table class="table">
                         <thead>
                             <tr>
-                                <th>Номер Темы</th>
+                                <th>Тема</th>
                                 <th>Вопрос</th>
                                 <th>Статус</th>
                                 <th>Дата Создания</th>
@@ -51,27 +51,23 @@
                     <tbody>
                     @foreach($questions as $question)
                             <tr>
-                                <td>{{ $question->topic_id }}</td>
+                                <td>{{ $question->topic->topic_name }}</td>
                                 <td>{{ $question->question }}</td>
-                                <td>
-                                    @if(($question->status) == 0)
-                                        <p class="bg-danger"><a href="{{ route('questions.answer', $question->id) }}">ожидает ответа</a></p>
-                                    @elseif(($question->status) == 1)
-                                        <p class="bg-success">опубликован</p>
-                                    @elseif(($question->status) == 2)
-                                        <p class="bg-info">скрыт</p>
-                                    @else
-                                        <p class="bg-danger">не известный</p>
-                                    @endif
-                                </td>
+                                <td>{{ $question->status->name }}</td>
                                 <td>{{ $question->created_at }}</td>
                                 <td>{{ $question->updated_at }}</td>
-                                <td><a href="{{ route('questions.edit', $question->id) }}" class="btn btn-primary">Редактировать</a></td>
+
+                                <td>
+                                    @if(($question->status_id) == 1)
+                                    <a href="{{ route('questions.answer', $question->id) }}" class="btn btn-primary  btn-sm">Ответить</a>
+                                    @endif
+                                    <a href="{{ route('questions.edit', $question->id) }}" class="btn btn-primary  btn-sm">Редактировать</a>
+                                </td>
                                 <td>
                                     <form method="POST" action="{{ route('questions.destroy', $question->id) }}">
                                         {{ method_field('DELETE') }}
                                         {{ csrf_field() }}
-                                        <button type="submit" class="btn btn-danger">Удалить</button>
+                                        <button type="submit" class="btn btn-danger  btn-sm">Удалить</button>
                                     </form>
                                 </td>
                             </tr>

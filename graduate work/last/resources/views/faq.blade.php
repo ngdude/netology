@@ -57,7 +57,7 @@
                             <li class="cd-faq-title"><h4>{{$topic->topic_name}}</h4></li>
                             @foreach($questions as $question)
                                 @if($question->topic_id == $topic->id)
-                                    @if($question->status == 1)
+                                    @if($question->status_id == 2)
                                         <li>
                                             <a class="cd-faq-trigger" href="#0">{{ $question->question }}</a>
                                             <div class="cd-faq-content">

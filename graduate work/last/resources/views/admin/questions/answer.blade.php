@@ -33,7 +33,7 @@
                             <label for="comment">Введите ответ на вопрос: {{ $question->question }}</label>
                             <textarea class="form-control" rows="8" id="comment" name="answer"></textarea>
                             <input type="hidden" name="question_id" value="{{ $question->id }}" />
-                            <input type="hidden" name="status" value="1" />
+                            <input type="hidden" name="status_id" value="2" />
                         </div>
                         <a href="{{ route('questions.index') }}" id="cancel" name="cancel" class="btn btn-default">Отмена</button></a>
                         <button type="submit" class="btn btn-default">Сохранить</button>

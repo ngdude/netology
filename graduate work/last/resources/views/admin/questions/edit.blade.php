@@ -50,21 +50,34 @@
                             </select>
                         </div>
                         <div class="form-group">
+                            @if(($question->status_id) == 1)
+                            <label for="topic_name">Вопрос ожидает ответа: </label>
+                                <input type="hidden" name="status_id" value="1">
+                            @else
                             <label for="topic_name">Настройка араметров отображения: </label>
-                            <select name="status"  class="form-control">
-                                @if(($question->status) == 1)
-                                    <option selected='selected' value="1">Показывать вопрос</option>
-                                    <option value="2">Скрывать вопрос</option>
+                            <select name="status_id"  class="form-control">
+                                @if(($question->status_id) == 2)
+                                    <option selected='selected' value="2">Показывать вопрос</option>
+                                    <option value="3">Скрывать вопрос</option>
                                 @else
-                                    <option value="1">Показывать вопрос</option>
-                                    <option selected='selected' value="2">Скрывать вопрос</option>
+                                    <option value="2">Показывать вопрос</option>
+                                    <option selected='selected' value="3">Скрывать вопрос</option>
                                 @endif
                             </select>
+                            @endif
                         </div>
                         <div class="form-group">
                             <label for="topic_name">Вопрос:</label>
                             <input type="topic_name" class="form-control" id="topic_name" value="{{$question->question}}" name="question">
                         </div>
+                        @if(($question->status_id) == 1)
+                            <input type="hidden" name="answer" value="">
+                        @else
+                        <div class="form-group">
+                            <label for="answer">Ответ:</label>
+                            <textarea class="form-control" rows="8" id="comment" name="answer">{{$question->answer}}</textarea>
+                        </div>
+                        @endif
                         <a href="{{ route('questions.index') }}" id="cancel" name="cancel" class="btn btn-default">Отмена</button></a>
                         <button type="submit" class="btn btn-default">Сохранить</button>
                         {{ method_field('PUT') }}

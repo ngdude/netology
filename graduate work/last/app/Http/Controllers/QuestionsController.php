@@ -7,6 +7,7 @@ use App\Question;
 use App\Topic;
 use DB;
 use Illuminate\Support\Facades\Session;
+use Illuminate\Support\Facades\Log;
 
 class QuestionsController extends Controller
 {
@@ -28,13 +29,14 @@ class QuestionsController extends Controller
     public function indexStatus($status)
     {
         if ($status == 'waitting'){
-            $status_id = 0;
-        } elseif ($status == 'shown'){
             $status_id = 1;
-        } else{
+        } elseif ($status == 'shown'){
             $status_id = 2;
+        } else{
+            $status_id = 3;
         }
-        $questions = Question::where('status', '=', $status_id)->simplePaginate(10);;
+        $questions = Question::where('status_id', '=', $status_id)->simplePaginate(10);;
+        Log::info('Зашёл на страничку.');
         return view('admin.questions.index', compact('questions'));
     }
 
@@ -53,6 +55,16 @@ class QuestionsController extends Controller
     {
         $question = Question::findOrFail($id);
         return view('admin.questions.answer', compact('question'));
+    }
+
+    public function answerUpdate(Request $request, $id)
+    {
+        $question = Question::findOrFail($id);
+        $this->validate($request, ['answer' => 'required']);
+        $input = $request->all();
+        $question->fill($input)->save();
+        Session::flash('flash_message', 'На вопрос успешно отвечено!');
+        return redirect('/admin/questions');
     }
 
     /**
@@ -126,4 +138,7 @@ class QuestionsController extends Controller
         Session::flash('flash_message', 'Вопрос успешно удалён!');
         return redirect()->back();
     }
+
 }
+
+
