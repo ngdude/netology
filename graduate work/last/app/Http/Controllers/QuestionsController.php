@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use App\Question;
 use App\Topic;
+use Auth;
 use DB;
 use Illuminate\Support\Facades\Session;
 use Illuminate\Support\Facades\Log;
@@ -35,8 +36,7 @@ class QuestionsController extends Controller
         } else{
             $status_id = 3;
         }
-        $questions = Question::where('status_id', '=', $status_id)->simplePaginate(10);;
-        Log::info('Зашёл на страничку.');
+        $questions = Question::where('status_id', '=', $status_id)->simplePaginate(10);
         return view('admin.questions.index', compact('questions'));
     }
 
@@ -63,7 +63,8 @@ class QuestionsController extends Controller
         $this->validate($request, ['answer' => 'required']);
         $input = $request->all();
         $question->fill($input)->save();
-        Session::flash('flash_message', 'На вопрос успешно отвечено!');
+        Session::flash('flash_message', "На вопрос $question->question успешно отвечено!");
+        Log::info(Auth::user()->name." ответил на вопрос ($question->id) \"$question->question\" в теме \"".$question->topic->topic_name.'"');
         return redirect('/admin/questions');
     }
 
@@ -73,12 +74,14 @@ class QuestionsController extends Controller
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
+
     public function store(Request $request)
     {
-        //dump($request);
         $this->validate($request, ['question' => 'required|max:100']);
-        Question::create($request->all());
-        Session::flash('flash_message', 'Вопрос успешно добавлен!');
+        $question = Question::create($request->all());
+        $question;
+        Session::flash('flash_message', "Вопрос $question->question успешно добавлен!");
+        Log::info(Auth::user()->name." добавил вопрос ($question->id) \"$question->question\" в тему \"".$question->topic->topic_name.'"');
         return redirect('/admin/questions');
     }
 
@@ -121,7 +124,8 @@ class QuestionsController extends Controller
         $this->validate($request, ['question' => 'required|max:100']);
         $input = $request->all();
         $question->fill($input)->save();
-        Session::flash('flash_message', 'Вопрос успешно изменён!');
+        Session::flash('flash_message', "Вопрос $question->question успешно изменён!");
+        Log::info(Auth::user()->name." изменил вопрос ($question->id) \"$question->question\" из темы \"".$question->topic->topic_name.'"');
         return redirect('/admin/questions');
     }
 
@@ -135,7 +139,8 @@ class QuestionsController extends Controller
     {
         $question = Question::findOrFail($id);
         $question->delete();
-        Session::flash('flash_message', 'Вопрос успешно удалён!');
+        Session::flash('flash_message', "Вопрос $question->question успешно удалён!");
+        Log::info(Auth::user()->name." удалил вопрос ($question->id) \"$question->question\" из темы \"".$question->topic->topic_name.'"');
         return redirect()->back();
     }
 

@@ -4,9 +4,11 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\User;
+use Auth;
 use DB;
 use Illuminate\Foundation\Auth\RegistersUsers;
 use Illuminate\Support\Facades\Session;
+use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Str;
 
 class AdminsController extends Controller
@@ -50,15 +52,13 @@ class AdminsController extends Controller
      */
     public function store(Request $request)
     {
-
         $this->validate($request, ['name' => 'required|unique:users|max:100']);
-        //User::create($request->all());
-        //Session::flash('flash_message', 'Task successfully added!');
-        //return redirect('/admin/topics');
-        User::create(['name' => $request['name'],
+        $admin = User::create(['name' => $request['name'],
             'password' => bcrypt($request['password_confirmation']),
             'remember_token' => Str::random(60)]);
-        Session::flash('flash_message', 'Пользователь успешно создан!');
+        $admin;
+        Session::flash('flash_message', "Пользователь ".$admin->name." успешно создан!");
+        Log::info(Auth::user()->name." создал пользователя: $admin->name");
         return redirect('/admin/admins');
         
     }
@@ -95,19 +95,17 @@ class AdminsController extends Controller
      */
     public function update(Request $request, $id)
     {
-        $user = User::findOrFail($id);
-        $input1 = $request->all();
-        $input2 = (['name' => $request['name'],
+        $admin = User::findOrFail($id);
+        //$input1 = $request->all();
+        $input = (['name' => $request['name'],
             'password' => bcrypt($request['password_confirmation']),
             'remember_token' => Str::random(60),
             '_method' => $request['_method'],
             '_token' => $request['_token']
             ]);
-
-        //dump($input1);
-        //dump($input2);
-        $user->fill($input2)->save();
-        Session::flash('flash_message', 'Тема успешно изменена!');
+        $admin->fill($input)->save();
+        Session::flash('flash_message', "Пароль для пользователя: $admin->name успешно изменён!");
+        Log::info(Auth::user()->name." сменил пароль для пользователя: $admin->name");
         return redirect('/admin/admins');
     }
 
@@ -122,7 +120,8 @@ class AdminsController extends Controller
     {
         $admin = User::findOrFail($id);
         $admin->delete();
-        Session::flash('flash_message', 'Пользователь успешно удалён!');
+        Session::flash('flash_message', "Пользователь ".$admin->name." успешно удалён!");
+        Log::info(Auth::user()->name." удалил пользователя: $admin->name");
         return redirect('/admin/admins');
     }
 }

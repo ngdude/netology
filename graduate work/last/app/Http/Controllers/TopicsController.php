@@ -7,7 +7,6 @@ use App\Topic;
 use Auth;
 use DB;
 use Illuminate\Support\Facades\Session;
-use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\Log;
 
 class TopicsController extends Controller
@@ -50,8 +49,10 @@ class TopicsController extends Controller
     public function store(Request $request)
     {
         $this->validate($request, ['topic_name' => 'required|unique:topics|max:100']);
-        Topic::create($request->all());
-        Session::flash('flash_message', 'Тема успешно добавлена!');
+        $topic = Topic::create($request->all());
+        $topic;
+        Session::flash('flash_message',"Тема: $topic->topic_name успешно добавлена!");
+        Log::info(Auth::user()->name." добавил Тему: $topic->topic_name");
         return redirect('/admin/topics');
     }
 
@@ -95,6 +96,7 @@ class TopicsController extends Controller
         $input = $request->all();
         $topic->fill($input)->save();
         Session::flash('flash_message', "Тема: $topic->topic_name успешно изменена!");
+        Log::info(Auth::user()->name." Изменил Тему: $topic->topic_name");
         return redirect('/admin/topics');
 
     }
@@ -114,8 +116,8 @@ class TopicsController extends Controller
             $question->delete();
         }
         $topic->delete();
-        Session::flash('flash_message', "Тема:$topic->topic_name и все вопросы в ней, успешно удалены!");
-        //Log::info("Auth::user()->name удалил Тему:$topic->topic_name и все вопросы в ней");
+        Session::flash('flash_message', "Тема: $topic->topic_name и все вопросы в ней, успешно удалены!");
+        Log::info(Auth::user()->name." удалил Тему: $topic->topic_name и все вопросы в ней");
         return redirect('/admin/topics');
     }
 }
