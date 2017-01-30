@@ -1,0 +1,81 @@
+
+SET NAMES utf8;
+SET time_zone = '+00:00';
+SET foreign_key_checks = 0;
+SET sql_mode = 'NO_AUTO_VALUE_ON_ZERO';
+
+DROP DATABASE IF EXISTS `lara_53_project_faq`;
+CREATE DATABASE `lara_53_project_faq` /*!40100 DEFAULT CHARACTER SET utf8 COLLATE utf8_unicode_ci */;
+USE `lara_53_project_faq`;
+
+
+DROP TABLE IF EXISTS `questions`;
+CREATE TABLE `questions` (
+  `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
+  `name` varchar(255) COLLATE utf8_unicode_ci NOT NULL,
+  `email` varchar(255) COLLATE utf8_unicode_ci NOT NULL,
+  `topic_id` int(10) unsigned NOT NULL,
+  `question` varchar(255) COLLATE utf8_unicode_ci NOT NULL,
+  `answer` text COLLATE utf8_unicode_ci,
+  `status_id` int(10) unsigned NOT NULL DEFAULT '1',
+  `created_at` timestamp NULL DEFAULT NULL,
+  `updated_at` timestamp NULL DEFAULT NULL,
+  PRIMARY KEY (`id`),
+  KEY `topic_id` (`topic_id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+
+TRUNCATE `questions`;
+
+DROP TABLE IF EXISTS `statuses`;
+CREATE TABLE `statuses` (
+  `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
+  `name` varchar(255) COLLATE utf8_unicode_ci NOT NULL,
+  `created_at` timestamp NULL DEFAULT NULL,
+  `updated_at` timestamp NULL DEFAULT NULL,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+
+TRUNCATE `statuses`;
+INSERT INTO `statuses` (`id`, `name`, `created_at`, `updated_at`) VALUES
+(1,	'Ожидает ответа',	NULL,	NULL),
+(2,	'Опубликован',	NULL,	NULL),
+(3,	'Скрыт',	NULL,	NULL),
+(4,	'Заблокирован',	NULL,	NULL);
+
+DROP TABLE IF EXISTS `topics`;
+CREATE TABLE `topics` (
+  `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
+  `topic_name` varchar(255) COLLATE utf8_unicode_ci NOT NULL,
+  `created_at` timestamp NULL DEFAULT NULL,
+  `updated_at` timestamp NULL DEFAULT NULL,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+
+TRUNCATE `topics`;
+
+DROP TABLE IF EXISTS `users`;
+CREATE TABLE `users` (
+  `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
+  `name` varchar(255) COLLATE utf8_unicode_ci NOT NULL,
+  `email` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL,
+  `password` varchar(255) COLLATE utf8_unicode_ci NOT NULL,
+  `remember_token` varchar(100) COLLATE utf8_unicode_ci DEFAULT NULL,
+  `created_at` timestamp NULL DEFAULT NULL,
+  `updated_at` timestamp NULL DEFAULT NULL,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+
+TRUNCATE `users`;
+INSERT INTO `users` (`id`, `name`, `email`, `password`, `remember_token`, `created_at`, `updated_at`) VALUES
+(38,	'admin',	NULL,	'$2y$10$9QtWxhy1NCPAqQu77Pl/6eL7pnMBwQ9lrwiQ5Mfz8ZrPu023X34mS',	'AJhGOAtiPY9z2XVh8ZILM2y4FFCEWZR7lvBHq8U1zfANClznyqFkw00wsBxT',	'2017-01-27 08:34:04',	'2017-01-30 06:09:28');
+
+DROP TABLE IF EXISTS `words`;
+CREATE TABLE `words` (
+  `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
+  `name` varchar(255) COLLATE utf8_unicode_ci NOT NULL,
+  `created_at` timestamp NULL DEFAULT NULL,
+  `updated_at` timestamp NULL DEFAULT NULL,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+
+TRUNCATE `words`;
