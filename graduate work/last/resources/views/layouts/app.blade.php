@@ -76,10 +76,38 @@
                 </div>
             </div>
         </nav>
-
+        <div class="container">
+            <div class="row">
+                <div class="col-md-2">
+                    <ul class="nav nav-pills nav-stacked">
+                        <li @if(Request::is('admin/home*')) class="active" @endif><a href="{{ route('home.index') }}"><i class="fa fa-home fa-fw"></i>Общая Информация</a></li>
+                        <li @if(Request::is('admin/admins*')) class="active" @endif><a href="{{ route('admins.index') }}"><i class="fa fa-file-o fa-fw"></i>Пользователи</a></li>
+                        <li @if(Request::is('admin/topics*')) class="active" @endif><a href="{{ route('topics.index') }}"><i class="fa fa-bar-chart-o fa-fw"></i>Темы</a></li>
+                        <li @if(Request::is('admin/questions*')) class="active" @endif><a href="{{ route('questions.index') }}"><i class="fa fa-table fa-fw"></i>Вопросы</a></li>
+                        <li @if(Request::is('admin/words*')) class="active" @endif><a href="{{ route('words.index') }}"><i class="fa fa-table fa-fw"></i>Запрещённые слова</a></li>
+                        <li @if(Request::is('admin/blocked*')) class="active" @endif><a href="{{ route('blocked.index') }}"><i class="fa fa-table fa-fw"></i>Заблокированные вопросы</a></li>
+                    </ul>
+                </div>
+                <div class="col-md-10 well">
+                    @if(Session::has('flash_message'))
+                        <div class="alert alert-success">
+                            {{ Session::get('flash_message') }}
+                        </div>
+                    @endif
+                    @if (count($errors) > 0)
+                        <div class="alert alert-danger">
+                            <ul>
+                                @foreach ($errors->all() as $error)
+                                    <li>{{ $error }}</li>
+                                @endforeach
+                            </ul>
+                        </div>
+                    @endif
         @yield('content')
+                </div>
+            </div>
+        </div>
     </div>
-
     <!-- Scripts -->
     <script src="/js/app.js"></script>
 </body>

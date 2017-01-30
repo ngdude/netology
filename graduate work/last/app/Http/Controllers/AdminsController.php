@@ -13,20 +13,18 @@ use Illuminate\Support\Str;
 
 class AdminsController extends Controller
 {
-    /**
-     * Display a listing of the resource.
-     *
-     * @return \Illuminate\Http\Response
+    /*
+     * Проверка авторизации перед вызовом метода
      */
-
     public function __construct()
     {
         $this->middleware('auth');
     }
 
-    //public function setPasswordAttribute($value){
-    //    $this->attributes['password'] = bcrypt($value);
-    //}
+    /**
+     * Запрос к баще с пагинацией
+     * передаёт данные в шаблон
+     */
 
     public function index()
     {
@@ -35,9 +33,7 @@ class AdminsController extends Controller
     }
 
     /**
-     * Show the form for creating a new resource.
-     *
-     * @return \Illuminate\Http\Response
+     * Открывает шаблон
      */
     public function create()
     {
@@ -45,10 +41,11 @@ class AdminsController extends Controller
     }
 
     /**
-     * Store a newly created resource in storage.
-     *
+     * Получает данные из $request
+     * Проверят нужные поля
+     * преобразует данные и $request и записывает в базу
+     * 
      * @param  \Illuminate\Http\Request  $request
-     * @return \Illuminate\Http\Response
      */
     public function store(Request $request)
     {
@@ -57,28 +54,16 @@ class AdminsController extends Controller
             'password' => bcrypt($request['password_confirmation']),
             'remember_token' => Str::random(60)]);
         $admin;
-        Session::flash('flash_message', "Пользователь ".$admin->name." успешно создан!");
-        Log::info(Auth::user()->name." создал пользователя: $admin->name");
+        Session::flash('flash_message', "Пользователь \"$admin->name\" успешно создан!");
+        Log::info(Auth::user()->name." создал пользователя: \"$admin->name\"");
         return redirect('/admin/admins');
         
     }
 
     /**
-     * Display the specified resource.
-     *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
-    public function show($id)
-    {
-        //
-    }
-
-    /**
-     * Show the form for editing the specified resource.
-     *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
+     * Получает данные из $id
+     * Запрос к базе по id
+     * перенаправляет данные в шаблон
      */
     public function edit($id)
     {
@@ -87,11 +72,13 @@ class AdminsController extends Controller
     }
 
     /**
-     * Update the specified resource in storage.
-     *
+     * Получает данные из $request
+     * проверят указанные данные с параметрами валидации
+     * записывает в базу
+     * Формирует сообщения в Session
+     * пишет Log
+     * перенаправляет в шаблон
      * @param  \Illuminate\Http\Request  $request
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
      */
     public function update(Request $request, $id)
     {
@@ -104,24 +91,25 @@ class AdminsController extends Controller
             '_token' => $request['_token']
             ]);
         $admin->fill($input)->save();
-        Session::flash('flash_message', "Пароль для пользователя: $admin->name успешно изменён!");
-        Log::info(Auth::user()->name." сменил пароль для пользователя: $admin->name");
+        Session::flash('flash_message', "Пароль для пользователя: \"$admin->name\" успешно изменён!");
+        Log::info(Auth::user()->name." сменил пароль для пользователя: \"$admin->name\"");
         return redirect('/admin/admins');
     }
 
     /**
-     * Remove the specified resource from storage.
-     *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
+     * Получает данные из $id
+     * Запрос к базе по id
+     * Удаляёт найденную запись
+     * Формирует сообщения в Session
+     * пишет Log
+     * перенаправляет по указанному пути
      */
-
     public function destroy($id)
     {
         $admin = User::findOrFail($id);
         $admin->delete();
-        Session::flash('flash_message', "Пользователь ".$admin->name." успешно удалён!");
-        Log::info(Auth::user()->name." удалил пользователя: $admin->name");
+        Session::flash('flash_message', "Пользователь \"$admin->name\" успешно удалён!");
+        Log::info(Auth::user()->name." удалил пользователя: \"$admin->name\"");
         return redirect('/admin/admins');
     }
 }

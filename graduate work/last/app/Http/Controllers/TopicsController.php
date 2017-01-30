@@ -11,70 +11,56 @@ use Illuminate\Support\Facades\Log;
 
 class TopicsController extends Controller
 {
-    /**
-     * Display a listing of the resource.
-     *
-     * @return \Illuminate\Http\Response
+    /*
+     * Проверка авторизации перед вызовом метода
      */
-
     public function __construct()
     {
         $this->middleware('auth');
     }
-    
+
+    /**
+     * Запрос к базе (ответ с пагинацией 9)
+     * Передаёт полученные данные в шаблон
+     */
     public function index()
     {
         $topics = Topic::paginate(9);
-            return view('admin.topics.index', compact('topics'));
+        return view('admin.topics.index', compact('topics'));
     }
 
     /**
-     * Show the form for creating a new resource.
-     *
-     * @return \Illuminate\Http\Response
+     * Вызывает шаблон
      */
-
     public function create()
     {
         return view('admin.topics.create');
     }
 
     /**
-     * Store a newly created resource in storage.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @return \Illuminate\Http\Response
+     * Получает данные из $request
+     * проверят указанные данные с параметрами валидации
+     * записывает в базу
+     * Формирует сообщения в Session
+     * пишет Log
+     * перенаправляет в шаблон
+     * @param  \Illuminate\Http\Request $request
      */
-
     public function store(Request $request)
     {
         $this->validate($request, ['topic_name' => 'required|unique:topics|max:100']);
         $topic = Topic::create($request->all());
         $topic;
-        Session::flash('flash_message',"Тема: $topic->topic_name успешно добавлена!");
-        Log::info(Auth::user()->name." добавил Тему: $topic->topic_name");
+        Session::flash('flash_message', "Тема: \"$topic->topic_name\" успешно добавлена!");
+        Log::info(Auth::user()->name . " добавил Тему: \"$topic->topic_name\"");
         return redirect('/admin/topics');
     }
 
     /**
-     * Display the specified resource.
-     *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
+     * Получает $id
+     * Запрос к базе по id
+     * Передаёт данные в шаблон
      */
-
-    public function show($id)
-    {
-        //
-    }
-
-    /**
-     * Show the form for editing the specified resource.
-     *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
-
     public function edit($id)
     {
         $topic = Topic::findOrFail($id);
@@ -82,42 +68,47 @@ class TopicsController extends Controller
     }
 
     /**
-     * Update the specified resource in storage.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
+     * Получает данные из $request и $id
+     * Запрос к базе по id
+     * проверят указанные данные с параметрами валидации
+     * записывает в базу изменения
+     * Формирует сообщения в Session
+     * пишет Log
+     * перенаправляет в шаблон
+     * @param  \Illuminate\Http\Request $request
      */
-
     public function update(Request $request, $id)
     {
         $topic = Topic::findOrFail($id);
         $this->validate($request, ['topic_name' => 'required|unique:topics|max:100']);
         $input = $request->all();
         $topic->fill($input)->save();
-        Session::flash('flash_message', "Тема: $topic->topic_name успешно изменена!");
-        Log::info(Auth::user()->name." Изменил Тему: $topic->topic_name");
+        Session::flash('flash_message', "Тема: \"$topic->topic_name\" успешно изменена!");
+        Log::info(Auth::user()->name . " Изменил Тему: \"$topic->topic_name\"");
         return redirect('/admin/topics');
 
     }
 
     /**
-     * Remove the specified resource from storage.
-     *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
+     * Получает данные из $request и $id
+     * Запрос к базе по id
+     * Запрос к другой базе и получение списка вопросов
+     * с послед удалением всех найденных
+     * Формирует сообщения в Session
+     * пишет Log
+     * перенаправляет в указанное место
+     * @param  \Illuminate\Http\Request $request
      */
-    
     public function destroy($id, Request $request)
     {
         $topic = Topic::findOrFail($id);
         $questionsAtTopic = $topic->getQuestions;
-        foreach ($questionsAtTopic as $question){
+        foreach ($questionsAtTopic as $question) {
             $question->delete();
         }
         $topic->delete();
-        Session::flash('flash_message', "Тема: $topic->topic_name и все вопросы в ней, успешно удалены!");
-        Log::info(Auth::user()->name." удалил Тему: $topic->topic_name и все вопросы в ней");
+        Session::flash('flash_message', "Тема: \"$topic->topic_name\" и все вопросы в ней, успешно удалены!");
+        Log::info(Auth::user()->name . " удалил Тему: \"$topic->topic_name\" и все вопросы в ней");
         return redirect('/admin/topics');
     }
 }
