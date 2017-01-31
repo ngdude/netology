@@ -12,7 +12,7 @@ class HomeController extends Controller
 {
     /**
      * Получаем список вопросов Тем
-     * Передаёт полученныеданные в faq
+     * Передаёт полученные данные в faq
      */
     public function index()
     {
@@ -35,9 +35,9 @@ class HomeController extends Controller
 
     /**
      * Получает данные из $request
-     * Проверяте указанные поля
+     * Проверят указанные поля
      * Формирует сообщения в Session
-     * Сохранятет данные в базе
+     * Сохраняет данные в базе
      * Переадресовывает на страницу
      */
     public function store(Request $request)

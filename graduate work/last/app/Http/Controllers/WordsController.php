@@ -39,7 +39,7 @@ class WordsController extends Controller
 
     /**
      * Получает данные и $request
-     * Проерят поле по указанным нараметрам
+     * Проверят поле по указанным параметрам
      * Формирует сообщения в Session
      * Пишет Log
      * Перенаправляет на указанную страницу
@@ -69,6 +69,6 @@ class WordsController extends Controller
         $word->delete();
         Session::flash('flash_message', "Слово \"$word->name\" удалено!");
         Log::info(Auth::user()->name . " удалил слово: \"$word->name\"");
-        return redirect('/admin/words');
+        return redirect('admin/words');
     }
 }
