@@ -22,10 +22,9 @@ class AdminsController extends Controller
     }
 
     /**
-     * Запрос к баще с пагинацией
+     * Получаем список пользователей с пагинацией
      * передаёт данные в шаблон
      */
-
     public function index()
     {
         $admins = User::paginate(10);
@@ -43,7 +42,7 @@ class AdminsController extends Controller
     /**
      * Получает данные из $request
      * Проверят нужные поля
-     * преобразует данные и $request и записывает в базу
+     * Готовит и записывает данные из request в базу
      * 
      * @param  \Illuminate\Http\Request  $request
      */
@@ -62,8 +61,8 @@ class AdminsController extends Controller
 
     /**
      * Получает данные из $id
-     * Запрос к базе по id
-     * перенаправляет данные в шаблон
+     * Получает пользователя по id
+     * Перенаправляет данные в шаблон
      */
     public function edit($id)
     {
@@ -73,17 +72,16 @@ class AdminsController extends Controller
 
     /**
      * Получает данные из $request
-     * проверят указанные данные с параметрами валидации
-     * записывает в базу
+     * Проверят указанные данные с параметрами валидации
+     * Записывает в базу
      * Формирует сообщения в Session
-     * пишет Log
-     * перенаправляет в шаблон
+     * Пишет Log
+     * Перенаправляет в шаблон
      * @param  \Illuminate\Http\Request  $request
      */
     public function update(Request $request, $id)
     {
         $admin = User::findOrFail($id);
-        //$input1 = $request->all();
         $input = (['name' => $request['name'],
             'password' => bcrypt($request['password_confirmation']),
             'remember_token' => Str::random(60),
@@ -98,11 +96,11 @@ class AdminsController extends Controller
 
     /**
      * Получает данные из $id
-     * Запрос к базе по id
+     * Получает пользователя по id
      * Удаляёт найденную запись
      * Формирует сообщения в Session
-     * пишет Log
-     * перенаправляет по указанному пути
+     * Пишет Log
+     * Перенаправляет по указанному пути
      */
     public function destroy($id)
     {

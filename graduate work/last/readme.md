@@ -1,13 +1,35 @@
-# Based on Laravel PHP Framework
+Введение.
 
-Laravel is a web application framework with expressive, elegant syntax. We believe development must be an enjoyable, creative experience to be truly fulfilling. Laravel attempts to take the pain out of development by easing common tasks used in the majority of web projects, such as authentication, routing, sessions, queueing, and caching.
+Общую информацию о приложении можно посмотреть на тестовой системе:
+http://laravel.foradmins.ru/admin/home
 
-Laravel is accessible, yet powerful, providing tools needed for large, robust applications. A superb inversion of control container, expressive migration system, and tightly integrated unit testing support give you the tools you need to build any application with which you are tasked.
 
-## Security Vulnerabilities
+Требования к системе
 
-If you discover a security vulnerability within Laravel, please send an e-mail to Dmirty V at ngdude@mail.ru. All security vulnerabilities will be promptly addressed.
+Проект основан на фреймворке Laravel 5.3
 
-## License
+Требованяи к системе:
+PHP >= 5.6.4
+OpenSSL PHP Extension
+PDO PHP Extension
+Mbstring PHP Extension
+Tokenizer PHP Extension
+XML PHP Extension
+Mysql like Database
 
-The Laravel framework is open-sourced software licensed under the [MIT license](http://opensource.org/licenses/MIT).
+Установка и первый запуск.
+
+1) Для установки скопируете и распакуйте последнюю версию приложения.
+https://github.com/ngdude/netology/blob/master/graduate%20work/last.zip
+
+ 2) faq.sgl находится дамп базы, с предварительными настройками.
+Для создания базы из дампа mysql -u root -p < faq.sgl 
+3) Выдайте права пользователя под которым проект будет подключаться к базе
+4) Замените значения переменных в .env согласно нужным вам;
+
+DB_USERNAME=
+DB_PASSWORD=
+
+5) Дополнительные настройки находят в \config, информацию по ним можно посмотреть на сайте фремворка.
+
+

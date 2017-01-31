@@ -11,7 +11,7 @@ use Illuminate\Support\Facades\Session;
 class HomeController extends Controller
 {
     /**
-     * Делает запрос к базам
+     * Получаем список вопросов Тем
      * Передаёт полученныеданные в faq
      */
     public function index()
@@ -34,11 +34,11 @@ class HomeController extends Controller
     }
 
     /**
-     * Получает данные и $request
-     * проверяте нужные поля
-     * формирует сообщения в Session
-     * сохранятет данные в базе
-     * переадресовывает на страницу
+     * Получает данные из $request
+     * Проверяте указанные поля
+     * Формирует сообщения в Session
+     * Сохранятет данные в базе
+     * Переадресовывает на страницу
      */
     public function store(Request $request)
     {

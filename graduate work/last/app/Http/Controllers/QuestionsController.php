@@ -12,7 +12,9 @@ use Illuminate\Support\Facades\Log;
 
 class QuestionsController extends Controller
 {
-
+    /*
+     * Проверка авторизации перед вызовом метода
+     */
     public function __construct()
     {
         $this->middleware('auth');
@@ -20,22 +22,23 @@ class QuestionsController extends Controller
 
     /**
      * Запрос к базе
-     * перенаправляет в шаблон
+     * Перенаправляет в шаблон
      */
     public function index()
     {
-        $questions = Question::where('status_id', '!=' , 4)->paginate(9);
+        $questions = Question::where('status_id', '!=', 4)->orderBy('created_at')->paginate(8);
         return view('admin.questions.index', compact('questions'));
     }
 
     /**
-     * Запрос к базе
-     * перенаправляет в шаблон
+     * Получение списка стоп слов
+     * Получение списка вопросов со статусом 4
+     * Перенаправяет в шаблон с полученными ранее данными
      */
     public function indexBlocked()
     {
         $blockedWords = QuestionsController::listWords();
-        $questions = Question::where('status_id', '=' , 4)->paginate(9);
+        $questions = Question::where('status_id', '=', 4)->paginate(8);
         return view('admin.blocked.index', compact('questions'))->with(['blockedWords' => $blockedWords]);
     }
 
@@ -43,34 +46,36 @@ class QuestionsController extends Controller
     /**Получает переменную из $status
      * Проверяет условие
      * Применяет перемунную и делает запрос к базе
-     * перенаправляет данные в шаблон
+     * получает список с пагинацией и сортировкой по дате
+     * Перенаправляет полученные данные в шаблон
      */
     public function indexStatus($status)
     {
-        if ($status == 'waitting'){
+        if ($status == 'waitting') {
             $statusId = 1;
-        } elseif ($status == 'shown'){
+        } elseif ($status == 'shown') {
             $statusId = 2;
-        } else
+        } else {
             $statusId = 3;
-        $questions = Question::where('status_id', '=', $statusId)->simplePaginate(10);
+        }
+        $questions = Question::where('status_id', '=', $statusId)->orderBy('created_at')->simplePaginate(8);
         return view('admin.questions.index', compact('questions'));
     }
 
     /**
-     * Запрос к базе
-     * перенаправляет данные в шаблон
+     * Получает список всех тем
+     * Перенаправляет данные в шаблон
      */
     public function create()
     {
-        $topics =  Topic::all();
+        $topics = Topic::all();
         return view('admin.questions.create', compact('topics'));
     }
 
     /**
      * Получает данные из $id
      * Запрос к базе
-     * перенаправляет данные в шаблон
+     * Перенаправляет данные в шаблон
      */
     public function answer($id)
     {
@@ -80,7 +85,7 @@ class QuestionsController extends Controller
 
     /**
      * Запрос к базе
-     * перенаправляет данные в шаблон
+     * Перенаправляет данные в шаблон
      */
     public function updateAnswer(Request $request, $id)
     {
@@ -89,20 +94,20 @@ class QuestionsController extends Controller
         $input = $request->all();
         $question->fill($input)->save();
         Session::flash('flash_message', "На вопрос \"$question->question\" успешно отвечено!");
-        Log::info(Auth::user()->name." ответил на вопрос ($question->id) \"$question->question\" в теме \"".$question->topic->topic_name."\"");
+        Log::info(Auth::user()->name . " ответил на вопрос ($question->id) \"$question->question\" в теме \"" . $question->topic->topic_name . "\"");
         return redirect($request->previousUri);
     }
 
     /**
      * Метод для првоерки темы
      * на наличее запрешённых слов
-     * @param  \Illuminate\Http\Request  $request
+     * @param  \Illuminate\Http\Request $request
      */
-    
+
     public function checkWords($request)
     {
         $find = DB::table('words')->select('name')->get()->toArray();
-        if(count($find) !== 0) {
+        if (count($find) !== 0) {
             foreach ($find as $value) {
                 $newArray[] = $value->name;
             }
@@ -114,7 +119,7 @@ class QuestionsController extends Controller
                 }
             }
         }
-       return false;
+        return false;
     }
 
     /**
@@ -124,7 +129,7 @@ class QuestionsController extends Controller
     {
         $find = DB::table('words')->select('name')->get()->toArray();
         $newarray = array();
-        foreach ($find as $value){
+        foreach ($find as $value) {
             $newarray[] = $value->name;
         }
         return $newarray;
@@ -134,42 +139,30 @@ class QuestionsController extends Controller
      * Получает данные из $request
      * Проверяет наличие стоп слов
      * Если находит добавляет в пответ переменную
-     * 
      * Формирует сообщения в Session
-     * пишет Log
-     * перенаправляет в указанное место
+     * Пишет Log
+     * Перенаправляет в указанное место
      * @param  \Illuminate\Http\Request $request
      */
     public function store(Request $request)
     {
-        if ((QuestionsController::checkWords($request)) != false){
+        if ((QuestionsController::checkWords($request)) != false) {
             $request->request->add(['status_id' => 4]);
         }
         $this->validate($request, ['question' => 'required|max:100']);
         $question = Question::create($request->all());
         $question;
         Session::flash('flash_message', "Вопрос \"$question->question\" успешно добавлен!");
-        Log::info(Auth::user()->name." добавил вопрос ($question->id) \"$question->question\" в тему \"".$question->topic->topic_name."\"");
+        Log::info(Auth::user()->name . " добавил вопрос ($question->id) \"$question->question\" в тему \"" . $question->topic->topic_name . "\"");
         return redirect($request->previousUri);
-        }
-
-    /**
-     * Display the specified resource.
-     *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
-    public function show($id)
-    {
-        //
     }
 
     /**
      * Получает данные из $id
-     * Запрос к базе по id
-     * Запрос к базе
-     * пишет Log
-     * перенаправляет в шаблон
+     * Получаем вопрос с указанным id
+     * Получаем список тем
+     * Пишет Log
+     * Перенаправляет в шаблон
      */
     public function edit($id)
     {
@@ -182,12 +175,12 @@ class QuestionsController extends Controller
 
     /**
      * Получает данные из $request и $id
-     * Запрос к базе по id
-     * проверят указанные данные с параметрами валидации
-     * записывает в базу
+     * Полкчаем вопрос с заданным id
+     * Проверят указанные данные с параметрами валидации
+     * Записывает в базу
      * Формирует сообщения в Session
-     * пишет Log
-     * перенаправляет в предидущую страницу
+     * Пишет Log
+     * Перенаправляет в предидущую страницу (previousUri параметр из шаблона)
      * @param  \Illuminate\Http\Request $request
      */
     public function update(Request $request, $id)
@@ -197,7 +190,7 @@ class QuestionsController extends Controller
         $input = $request->all();
         $question->fill($input)->save();
         Session::flash('flash_message', "Вопрос \"$question->question\" успешно изменён!");
-        Log::info(Auth::user()->name." изменил вопрос ($question->id) \"$question->question\" в теме \"".$question->topic->topic_name."\"");
+        Log::info(Auth::user()->name . " изменил вопрос ($question->id) \"$question->question\" в теме \"" . $question->topic->topic_name . "\"");
         return redirect($request->previousUri);
     }
 
@@ -206,15 +199,15 @@ class QuestionsController extends Controller
      * Проверяет условие и готовит переменную для ответа
      * Записывает данные в базу
      * Формирует сообщения в Session
-     * пишет Log
-     * перенаправляет на предидущую страницу
+     * Пишет Log
+     * Перенаправляет на предидущую страницу
      */
     public function changeStatus(Request $request, $id)
     {
         $question = Question::findOrFail($id);
-        if ($question->status_id == 2){
+        if ($question->status_id == 2) {
             $statusname = 'скрыт';
-        } elseif ($question->status_id == 3){
+        } elseif ($question->status_id == 3) {
             $statusname = 'опубликован';
         } else {
             $statusname = 'ожидает ответа';
@@ -222,7 +215,7 @@ class QuestionsController extends Controller
         $input = $request->all();
         $question->fill($input)->save();
         Session::flash('flash_message', "Статус вопроса \"$question->question\" изменён на \"$statusname\"");
-        Log::info(Auth::user()->name." изменил видимость вопроса ($question->id) \"$question->question\" на \"$statusname\" в теме \"".$question->topic->topic_name."\"");
+        Log::info(Auth::user()->name . " изменил видимость вопроса ($question->id) \"$question->question\" на \"$statusname\" в теме \"" . $question->topic->topic_name . "\"");
         return redirect()->back();
     }
 
@@ -230,18 +223,17 @@ class QuestionsController extends Controller
      * Получает данные из $id
      * Удаляет полученные данные из базы
      * Формирует сообщения в Session
-     * пишет Log
-     * перенаправляет на предидущую страницу
+     * Пишет Log
+     * Перенаправляет на предидущую страницу
      */
     public function destroy($id)
     {
         $question = Question::findOrFail($id);
         $question->delete();
         Session::flash('flash_message', "Вопрос \"$question->question\" успешно удалён!");
-        Log::info(Auth::user()->name." удалил вопрос ($question->id) \"$question->question\" из темы \"".$question->topic->topic_name.'"');
+        Log::info(Auth::user()->name . " удалил вопрос ($question->id) \"$question->question\" из темы \"" . $question->topic->topic_name . '"');
         return redirect()->back();
     }
 
 }
-
 

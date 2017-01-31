@@ -20,7 +20,7 @@ class TopicsController extends Controller
     }
 
     /**
-     * Запрос к базе (ответ с пагинацией 9)
+     * Получает список тем (ответ с пагинацией 9)
      * Передаёт полученные данные в шаблон
      */
     public function index()
@@ -39,11 +39,11 @@ class TopicsController extends Controller
 
     /**
      * Получает данные из $request
-     * проверят указанные данные с параметрами валидации
-     * записывает в базу
+     * Проверят указанные данные с параметрами валидации
+     * Записывает в базу
      * Формирует сообщения в Session
-     * пишет Log
-     * перенаправляет в шаблон
+     * Пишет Log
+     * Перенаправляет в шаблон
      * @param  \Illuminate\Http\Request $request
      */
     public function store(Request $request)
@@ -69,12 +69,12 @@ class TopicsController extends Controller
 
     /**
      * Получает данные из $request и $id
-     * Запрос к базе по id
-     * проверят указанные данные с параметрами валидации
-     * записывает в базу изменения
+     * Получаем тему по id
+     * Проверят входные данные с параметрами валидации
+     * Записывает в базу изменения
      * Формирует сообщения в Session
      * пишет Log
-     * перенаправляет в шаблон
+     * Перенаправляет в шаблон
      * @param  \Illuminate\Http\Request $request
      */
     public function update(Request $request, $id)
@@ -95,8 +95,8 @@ class TopicsController extends Controller
      * Запрос к другой базе и получение списка вопросов
      * с послед удалением всех найденных
      * Формирует сообщения в Session
-     * пишет Log
-     * перенаправляет в указанное место
+     * Пишет Log
+     * Перенаправляет в указанное место
      * @param  \Illuminate\Http\Request $request
      */
     public function destroy($id, Request $request)
