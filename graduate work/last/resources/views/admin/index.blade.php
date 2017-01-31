@@ -41,6 +41,10 @@
             </div>
             <div class="col-sm-1">
             </div>
+            <div class="col-sm-4">
+                <h3>Логирование</h3>
+                <p>Логирование действий администраторов ведётся в стандартный лог Laravel /storage/logs/laravel.log</p>
+            </div>
         </div>
     </div>
 
